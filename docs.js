@@ -1,6 +1,5 @@
 import { parse } from "./node_modules/comment-parser/es6/index.js";
-
-const FENCE = "```";
+import { render } from "./renderer.js";
 
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
@@ -72,8 +71,7 @@ async function main() {
   const source = await fetchSource(url);
   const blocks = parseSource(source);
 
-  outputEl.querySelector("code").textContent =
-    `${FENCE}json\n${JSON.stringify(blocks, null, 2)}\n${FENCE}`;
+  outputEl.innerHTML = render(blocks);
   statusEl.hidden = true;
   outputEl.hidden = false;
 }
