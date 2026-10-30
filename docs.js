@@ -1,4 +1,5 @@
 import { parse } from "./node_modules/comment-parser/es6/index.js";
+import { findDocumentedDeclarations } from "./declarations.js";
 import { render } from "./renderer.js";
 
 const statusEl = document.getElementById("status");
@@ -57,10 +58,19 @@ async function fetchSource(url) {
 }
 
 function parseSource(source) {
+  let found;
   try {
-    return parse(source);
+    found = findDocumentedDeclarations(source);
   } catch (err) {
-    throw new Error(`Could not parse file: ${err.message}`);
+    throw new Error(`Could not parse file as JavaScript: ${err.message}`);
+  }
+
+  try {
+    return found.flatMap(({ comment, declaration }) =>
+      parse(comment).map((block) => ({ block, declaration })),
+    );
+  } catch (err) {
+    throw new Error(`Could not parse doc comment: ${err.message}`);
   }
 }
 
@@ -69,9 +79,9 @@ async function main() {
   sourceEl.textContent = `Source: ${url}`;
 
   const source = await fetchSource(url);
-  const blocks = parseSource(source);
+  const entries = parseSource(source);
 
-  outputEl.innerHTML = render(blocks);
+  outputEl.innerHTML = render(entries);
   statusEl.hidden = true;
   outputEl.hidden = false;
 }

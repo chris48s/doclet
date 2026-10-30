@@ -52,7 +52,27 @@ function renderTag(tag) {
   return `<li class="tag">${parts.join(" ")}${description}${renderProblems(tag.problems)}</li>`;
 }
 
-function renderBlock(block) {
+function renderHeading(declaration) {
+  if (!declaration) {
+    return "";
+  }
+
+  const modifiers = [];
+  if (declaration.exported) modifiers.push(declaration.default ? "export default" : "export");
+  if (declaration.static) modifiers.push("static");
+  if (declaration.async) modifiers.push("async");
+  if (declaration.generator) modifiers.push("generator");
+
+  const keyword = declaration.kind === "variable" ? declaration.declarationKind ?? "variable" : declaration.kind;
+  const name = declaration.name ?? "(anonymous)";
+  const params = declaration.params ? `(${declaration.params.join(", ")})` : "";
+  const extendsClause = declaration.extends ? ` extends ${declaration.extends}` : "";
+  const prefix = [...modifiers, keyword].join(" ");
+
+  return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code></h2>`;
+}
+
+function renderBlock({ block, declaration }) {
   const description = block.description
     ? `<div class="description">${renderDescription(block.description)}</div>`
     : "";
@@ -62,6 +82,7 @@ function renderBlock(block) {
   const source = block.source.map((line) => line.source).join("\n");
 
   return `<section class="block">
+${renderHeading(declaration)}
 ${description}
 ${tags}
 ${renderProblems(block.problems)}
@@ -70,12 +91,12 @@ ${renderProblems(block.problems)}
 }
 
 /**
- * Render the array of blocks returned by comment-parser's parse() to an HTML string.
- * All source-derived text is escaped.
+ * Render [{ block, declaration }] to an HTML string, where `block` is a comment-parser
+ * Block and `declaration` is from declarations.js (or null). All source-derived text is escaped.
  */
-export function render(blocks) {
-  if (blocks.length === 0) {
+export function render(entries) {
+  if (entries.length === 0) {
     return "<p>No documentation comments found.</p>";
   }
-  return blocks.map(renderBlock).join("\n");
+  return entries.map(renderBlock).join("\n");
 }
