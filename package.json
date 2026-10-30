@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "http-server ."
+  },
+  "dependencies": {
+    "comment-parser": "^1.4.9"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
