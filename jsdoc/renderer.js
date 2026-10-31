@@ -47,7 +47,7 @@ function renderProblems(problems) {
 }
 
 function renderTag(tag) {
-  const parts = [`<span class="tag-name">@${escapeHtml(tag.tag)}</span>`];
+  const parts = [`<span class="tag-name">${escapeHtml(tag.tag)}</span>`];
 
   if (tag.type) {
     parts.push(`<code class="tag-type">{${escapeHtml(tag.type)}}</code>`);
