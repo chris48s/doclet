@@ -4,6 +4,11 @@
   "type": "module",
   "author": "chris48s",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chris48s/doclet.git"
+  },
+  "homepage": "https://github.com/chris48s/doclet",
   "scripts": {
     "start": "http-server .",
     "test": "node --test --experimental-test-coverage",
