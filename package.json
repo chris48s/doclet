@@ -13,7 +13,6 @@
     "start": "http-server .",
     "test": "node --test --experimental-test-coverage",
     "lint": "eslint \"**/*.{js,cjs,mjs}\"",
-    "coverage": "./coverage.sh",
     "prettier": "prettier --write \"**/*.{js,cjs,mjs,html,css}\"",
     "prettier:check": "prettier --check \"**/*.{js,cjs,mjs,html,css}\""
   },
