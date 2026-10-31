@@ -70,9 +70,20 @@ function renderTag(tag) {
   return `<li class="tag">${parts.join(" ")}${description}${renderProblems(tag.problems)}</li>`;
 }
 
-function renderHeading(declaration) {
+// Slugs the declaration name and appends -2, -3, ... on collision so every id on the page is unique.
+function makeId(declaration, used) {
+  const base = (declaration?.name ?? "").replace(/[^\w$.-]+/g, "-").replace(/^-+|-+$/g, "") || "block";
+  let id = base;
+  for (let n = 2; used.has(id); n++) {
+    id = `${base}-${n}`;
+  }
+  used.add(id);
+  return id;
+}
+
+function renderHeading(declaration, id) {
   if (!declaration) {
-    return "";
+    return `<h2 class="signature"><a class="permalink" href="#${escapeHtml(id)}">#</a></h2>`;
   }
 
   const modifiers = [];
@@ -87,10 +98,11 @@ function renderHeading(declaration) {
   const extendsClause = declaration.extends ? ` extends ${declaration.extends}` : "";
   const prefix = [...modifiers, keyword].join(" ");
 
-  return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code></h2>`;
+  return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code> <a class="permalink" href="#${escapeHtml(id)}" title="Permalink">#</a></h2>`;
 }
 
-function renderBlock({ block, declaration }) {
+function renderBlock({ block, declaration }, used) {
+  const id = makeId(declaration, used);
   const description = block.description
     ? `<div class="description">${renderDescription(block.description)}</div>`
     : "";
@@ -98,8 +110,8 @@ function renderBlock({ block, declaration }) {
     ? `<ul class="tags">${block.tags.map(renderTag).join("\n")}</ul>`
     : "";
 
-  return `<section class="block">
-${renderHeading(declaration)}
+  return `<section class="block" id="${escapeHtml(id)}">
+${renderHeading(declaration, id)}
 ${description}
 ${tags}
 ${renderProblems(block.problems)}
@@ -114,5 +126,6 @@ export function render(entries) {
   if (entries.length === 0) {
     return "<p>No documentation comments found.</p>";
   }
-  return entries.map(renderBlock).join("\n");
+  const used = new Set();
+  return entries.map((entry) => renderBlock(entry, used)).join("\n");
 }

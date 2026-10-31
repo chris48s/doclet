@@ -100,6 +100,10 @@ async function main() {
   outputEl.innerHTML = render(entries);
   statusEl.hidden = true;
   outputEl.hidden = false;
+
+  if (location.hash) {
+    document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
+  }
 }
 
 main().catch((err) => showError(err.message));
