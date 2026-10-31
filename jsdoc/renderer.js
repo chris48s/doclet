@@ -96,14 +96,12 @@ function renderBlock({ block, declaration }) {
   const tags = block.tags.length
     ? `<ul class="tags">${block.tags.map(renderTag).join("\n")}</ul>`
     : "";
-  const source = block.source.map((line) => line.source).join("\n");
 
   return `<section class="block">
 ${renderHeading(declaration)}
 ${description}
 ${tags}
 ${renderProblems(block.problems)}
-<details><summary>Source</summary><pre><code>${escapeHtml(source)}</code></pre></details>
 </section>`;
 }
 
