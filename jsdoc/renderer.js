@@ -53,7 +53,7 @@ function renderTag(tag) {
     parts.push(`<code class="tag-type">{${escapeHtml(tag.type)}}</code>`);
   }
   if (tag.name) {
-    parts.push(`<code class="tag-id">${escapeHtml(tag.name)}</code>`);
+    parts.push(`<code class="tag-id">${linkify(tag.name)}</code>`);
   }
   if (tag.optional) {
     parts.push('<span class="tag-optional">optional</span>');
