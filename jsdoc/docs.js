@@ -1,4 +1,4 @@
-import { parse } from "../node_modules/comment-parser/es6/index.js";
+import { parse, tokenizers } from "../node_modules/comment-parser/es6/index.js";
 import { findDocumentedDeclarations } from "./declarations.js";
 import { render, escapeHtml } from "./renderer.js";
 
@@ -58,6 +58,19 @@ async function fetchSource(url) {
   }
 }
 
+const RETURN_TAGS = new Set(["@returns", "@return"]);
+const tokenizeName = tokenizers.name();
+
+const parserOptions = {
+  tokenizers: [
+    tokenizers.tag(),
+    tokenizers.type("compact"),
+    // Return values have no name, so the rest of the line is the description
+    (spec) => (RETURN_TAGS.has(`@${spec.tag}`) ? spec : tokenizeName(spec)),
+    tokenizers.description("compact"),
+  ],
+};
+
 function parseSource(source) {
   let found;
   try {
@@ -68,7 +81,7 @@ function parseSource(source) {
 
   try {
     return found.flatMap(({ comment, declaration }) =>
-      parse(comment).map((block) => ({ block, declaration })),
+      parse(comment, parserOptions).map((block) => ({ block, declaration })),
     );
   } catch (err) {
     throw new Error(`Could not parse doc comment: ${err.message}`);
