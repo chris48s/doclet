@@ -43,7 +43,7 @@ function renderProblems(problems) {
   const items = problems
     .map((p) => `<li>Line ${escapeHtml(p.line)}: ${escapeHtml(p.message)}</li>`)
     .join("");
-  return `<ul class="problems">${items}</ul>`;
+  return `<h3 class="problems">Problems</h3><ul class="problems">${items}</ul>`;
 }
 
 function renderTag(tag) {
