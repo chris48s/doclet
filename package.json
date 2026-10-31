@@ -6,7 +6,11 @@
   "license": "MIT",
   "scripts": {
     "start": "http-server .",
-    "test": "node --test --experimental-test-coverage"
+    "test": "node --test --experimental-test-coverage",
+    "lint": "eslint \"**/*.{js,cjs,mjs}\"",
+    "coverage": "./coverage.sh",
+    "prettier": "prettier --write \"**/*.{js,cjs,mjs,html,css}\"",
+    "prettier:check": "prettier --check \"**/*.{js,cjs,mjs,html,css}\""
   },
   "dependencies": {
     "acorn": "^8.19.0",
@@ -15,6 +19,13 @@
     "water.css": "^2.1.1"
   },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-node-core-test": "^0.2.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "globals": "^17.3.0",
+    "http-server": "^14.1.1",
+    "prettier": "^3.0.0"
   }
 }
