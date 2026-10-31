@@ -1,4 +1,4 @@
-import { parse } from "./node_modules/comment-parser/es6/index.js";
+import { parse } from "../node_modules/comment-parser/es6/index.js";
 import { findDocumentedDeclarations } from "./declarations.js";
 import { render } from "./renderer.js";
 
