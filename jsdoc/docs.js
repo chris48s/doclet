@@ -6,6 +6,7 @@ const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const outputEl = document.getElementById("output");
 const sourceEl = document.getElementById("source");
+const titleEl = document.getElementById("title");
 
 function showError(message) {
   statusEl.hidden = true;
@@ -76,6 +77,7 @@ function parseSource(source) {
 
 async function main() {
   const url = getTargetUrl();
+  titleEl.textContent = url.pathname.split("/").pop() || 'Doclet';
   sourceEl.textContent = `Source: ${url}`;
 
   const source = await fetchSource(url);
