@@ -6,7 +6,7 @@ import prettierPlugin from "eslint-plugin-prettier";
 
 const config = [
   {
-    ignores: [],
+    ignores: ["dist/"],
   },
   js.configs.recommended,
   prettierConfig,
@@ -33,6 +33,14 @@ const config = [
     },
     rules: {
       "prettier/prettier": ["error"],
+    },
+  },
+  {
+    files: ["build.mjs"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 ];

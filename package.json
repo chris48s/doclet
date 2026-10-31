@@ -10,7 +10,8 @@
   },
   "homepage": "https://github.com/chris48s/doclet",
   "scripts": {
-    "start": "http-server .",
+    "start": "node build.mjs --serve",
+    "build": "node build.mjs",
     "test": "node --test --experimental-test-coverage",
     "lint": "eslint \"**/*.{js,cjs,mjs}\"",
     "prettier": "prettier --write \"**/*.{js,cjs,mjs,html,css}\"",
@@ -24,12 +25,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "esbuild": "^0.28.2",
     "eslint": "^10.0.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-node-core-test": "^0.2.1",
     "eslint-plugin-prettier": "^5.0.0",
     "globals": "^17.3.0",
-    "http-server": "^14.1.1",
     "prettier": "^3.0.0"
   }
 }
