@@ -57,7 +57,7 @@ describe("findDocumentedDeclarations", () => {
   });
 
   test("ignores destructuring declarations", () => {
-    assert.equal(declOf("/** */\nconst { a } = b;"), null);
+    assert.deepEqual(declOf("/** */\nconst { a } = b;"), { kind: "comment" });
   });
 
   test("marks named and default exports", () => {
@@ -128,12 +128,14 @@ describe("findDocumentedDeclarations", () => {
     );
   });
 
-  test("returns null declaration when nothing follows", () => {
-    assert.equal(declOf("function f() {}\n/** trailing */"), null);
+  test("returns comment declaration when nothing follows", () => {
+    assert.deepEqual(declOf("function f() {}\n/** trailing */"), {
+      kind: "comment",
+    });
   });
 
-  test("returns null declaration for unrecognised nodes", () => {
-    assert.equal(declOf("/** */\nif (x) {}"), null);
+  test("returns comment declaration for unrecognised nodes", () => {
+    assert.deepEqual(declOf("/** */\nif (x) {}"), { kind: "comment" });
   });
 
   test("falls back to script parsing (CommonJS)", () => {

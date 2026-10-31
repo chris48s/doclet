@@ -158,7 +158,7 @@ function describe(node, source) {
 
 /**
  * Find every JSDoc-style block comment in `source` and the declaration it precedes.
- * Returns [{ comment, declaration }]; `declaration` is null when nothing recognisable follows.
+ * Returns [{ comment, declaration }]; `declaration` is { kind: "comment" } when nothing recognisable follows.
  * Throws if the source is not valid JavaScript.
  */
 export function findDocumentedDeclarations(source) {
@@ -185,6 +185,7 @@ export function findDocumentedDeclarations(source) {
       pos = commentEnds.get(pos);
     }
     const node = pos === -1 ? undefined : nodeAt.get(pos);
-    return { comment: text, declaration: node ? describe(node, source) : null };
+    const declaration = (node && describe(node, source)) ?? { kind: "comment" };
+    return { comment: text, declaration };
   });
 }
