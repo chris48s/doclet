@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { main } from "../jsdoc/docs.js";
+import { main } from "../src/jsdoc/docs.js";
 
 function makeEnv({ search = "", hash = "", fetch } = {}) {
   const ids = ["status", "error", "output", "source", "title"];

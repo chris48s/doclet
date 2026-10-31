@@ -5,12 +5,12 @@ const outdir = "dist";
 
 const options = {
   entryPoints: [
-    "index.html",
-    "jsdoc/index.js",
-    "jsdoc/index.html",
-    "css/styles.css",
+    "src/index.html",
+    "src/jsdoc/index.js",
+    "src/jsdoc/index.html",
+    "src/css/styles.css",
   ],
-  outbase: ".",
+  outbase: "src",
   outdir,
   bundle: true,
   format: "esm",

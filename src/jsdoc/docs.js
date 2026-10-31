@@ -1,4 +1,4 @@
-import { parse, tokenizers } from "../node_modules/comment-parser/es6/index.js";
+import { parse, tokenizers } from "comment-parser";
 import { findDocumentedDeclarations } from "./declarations.js";
 import { render, escapeHtml } from "./renderer.js";
 

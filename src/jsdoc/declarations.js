@@ -1,5 +1,5 @@
-import * as acorn from "../node_modules/acorn/dist/acorn.mjs";
-import { full } from "../node_modules/acorn-walk/dist/walk.mjs";
+import * as acorn from "acorn";
+import { full } from "acorn-walk";
 
 const FUNCTION_TYPES = new Set([
   "FunctionExpression",

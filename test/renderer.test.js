@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { escapeHtml, render } from "../jsdoc/renderer.js";
+import { escapeHtml, render } from "../src/jsdoc/renderer.js";
 
 const block = (overrides = {}) => ({
   description: "",
