@@ -1,0 +1,102 @@
+:root {
+  --accent: #0d47a1;
+  --accent-2: #455a64;
+  --danger: #c62828;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent: #64b5f6;
+    --accent-2: #b0bec5;
+    --danger: #ff8a80;
+  }
+}
+
+body { max-width: 860px; }
+
+#title {
+  font-size: 2.4rem;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+#source {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, var(--accent), var(--accent-2)) 1;
+  overflow-wrap: anywhere;
+}
+
+#error {
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  border-left-width: 5px;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+
+.block {
+  background: var(--background-alt);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.block:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transform: translateY(-1px);
+}
+
+.signature {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.signature code { background: transparent; padding: 0; font-weight: 600; color: var(--text-bright); }
+.kind {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+}
+.permalink {
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.block:hover .permalink, .permalink:focus { opacity: 1; }
+
+.tags { list-style: none; padding: 0; margin: 1rem 0 0; }
+.tag {
+  margin: 0;
+  padding: 0.6rem 0;
+  border-top: 1px dashed var(--border);
+}
+.tag-name {
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--background);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+.tag-type { color: var(--accent-2); }
+.tag-optional, .tag-default { color: var(--text-muted); font-size: 0.85em; }
+.tag-optional { font-style: italic; }
+.tag-description { margin-left: 1rem; }
+.tag-description p { margin: 0.25rem 0; }
+
+.problems { color: var(--danger); }
