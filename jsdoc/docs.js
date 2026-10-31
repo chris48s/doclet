@@ -1,6 +1,6 @@
 import { parse } from "../node_modules/comment-parser/es6/index.js";
 import { findDocumentedDeclarations } from "./declarations.js";
-import { render } from "./renderer.js";
+import { render, escapeHtml } from "./renderer.js";
 
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
@@ -78,7 +78,8 @@ function parseSource(source) {
 async function main() {
   const url = getTargetUrl();
   titleEl.textContent = url.pathname.split("/").pop() || 'Doclet';
-  sourceEl.textContent = `Source: ${url}`;
+  const safeUrl = escapeHtml(url.href);
+  sourceEl.innerHTML = `Source: <a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a>`;
 
   const source = await fetchSource(url);
   const entries = parseSource(source);

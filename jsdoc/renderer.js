@@ -6,8 +6,25 @@ const ESCAPES = {
   "'": "&#39;",
 };
 
-function escapeHtml(value) {
+export function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (c) => ESCAPES[c]);
+}
+
+// Matches http(s) URLs, excluding trailing punctuation.
+const URL_PATTERN = /https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?)\]}]/g;
+
+// Escapes text and wraps http(s) URLs in anchors; only unescaped pieces are split, so output stays safe.
+function linkify(text) {
+  let result = "";
+  let last = 0;
+  for (const match of text.matchAll(URL_PATTERN)) {
+    const url = match[0];
+    result += escapeHtml(text.slice(last, match.index));
+    const safeUrl = escapeHtml(url);
+    result += `<a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a>`;
+    last = match.index + url.length;
+  }
+  return result + escapeHtml(text.slice(last));
 }
 
 function renderDescription(description) {
@@ -15,7 +32,7 @@ function renderDescription(description) {
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
-    .map((p) => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
+    .map((p) => `<p>${linkify(p).replace(/\n/g, "<br>")}</p>`)
     .join("\n");
 }
 
