@@ -1,5 +1,9 @@
 {
+  "name": "doclet",
+  "version": "0.0.0",
   "type": "module",
+  "author": "chris48s",
+  "license": "MIT",
   "scripts": {
     "start": "http-server .",
     "test": "node --test --experimental-test-coverage"
