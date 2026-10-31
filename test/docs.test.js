@@ -87,6 +87,26 @@ describe("main", () => {
     assert.match(elements.output.innerHTML, /<p>The sum<\/p>/);
   });
 
+  for (const tag of ["file", "fileoverview", "overview"]) {
+    // eslint-disable-next-line node-core-test/consistent-spacing-between-blocks
+    test(`does not treat @${tag} text as a name`, async () => {
+      const source = `/**\n * @${tag} Manages the configuration settings\n */\nexport function f() {}\n`;
+      const { env, elements } = makeEnv({
+        search: urlParam("https://example.com/f.js"),
+        fetch: respond(source),
+      });
+      await main(env);
+      assert.doesNotMatch(
+        elements.output.innerHTML,
+        /<code class="tag-id">Manages<\/code>/,
+      );
+      assert.match(
+        elements.output.innerHTML,
+        /Manages the configuration settings/,
+      );
+    });
+  }
+
   test("falls back to the default title when the path has no file name", async () => {
     const { env, elements } = makeEnv({
       search: urlParam("https://example.com/"),

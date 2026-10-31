@@ -51,15 +51,22 @@ async function fetchSource(url, fetch) {
   }
 }
 
-const RETURN_TAGS = new Set(["@returns", "@return"]);
+const DESCRIPTION_ONLY_TAGS = new Set([
+  "@returns",
+  "@return",
+  "@file",
+  "@fileoverview",
+  "@overview",
+]);
 const tokenizeName = tokenizers.name();
 
 const parserOptions = {
   tokenizers: [
     tokenizers.tag(),
     tokenizers.type("compact"),
-    // Return values have no name, so the rest of the line is the description
-    (spec) => (RETURN_TAGS.has(`@${spec.tag}`) ? spec : tokenizeName(spec)),
+    // These tags have no name, so the rest of the line is the description
+    (spec) =>
+      DESCRIPTION_ONLY_TAGS.has(`@${spec.tag}`) ? spec : tokenizeName(spec),
     tokenizers.description("compact"),
   ],
 };
