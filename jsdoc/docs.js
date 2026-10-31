@@ -2,21 +2,8 @@ import { parse, tokenizers } from "../node_modules/comment-parser/es6/index.js";
 import { findDocumentedDeclarations } from "./declarations.js";
 import { render, escapeHtml } from "./renderer.js";
 
-const statusEl = document.getElementById("status");
-const errorEl = document.getElementById("error");
-const outputEl = document.getElementById("output");
-const sourceEl = document.getElementById("source");
-const titleEl = document.getElementById("title");
-
-function showError(message) {
-  statusEl.hidden = true;
-  outputEl.hidden = true;
-  errorEl.textContent = `Error: ${message}`;
-  errorEl.hidden = false;
-}
-
-function getTargetUrl() {
-  const raw = new URLSearchParams(window.location.search).get("url");
+function getTargetUrl(search) {
+  const raw = new URLSearchParams(search).get("url");
   if (!raw) {
     throw new Error("Missing required query parameter 'url'.");
   }
@@ -34,7 +21,7 @@ function getTargetUrl() {
   return url;
 }
 
-async function fetchSource(url) {
+async function fetchSource(url, fetch) {
   let response;
   try {
     response = await fetch(url);
@@ -88,13 +75,19 @@ function parseSource(source) {
   }
 }
 
-async function main() {
-  const url = getTargetUrl();
-  titleEl.textContent = url.pathname.split("/").pop() || 'Doclet';
+async function load(env) {
+  const { document, location, fetch } = env;
+  const statusEl = document.getElementById("status");
+  const outputEl = document.getElementById("output");
+  const sourceEl = document.getElementById("source");
+  const titleEl = document.getElementById("title");
+
+  const url = getTargetUrl(location.search);
+  titleEl.textContent = url.pathname.split("/").pop() || "Doclet";
   const safeUrl = escapeHtml(url.href);
   sourceEl.innerHTML = `Source: <a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a>`;
 
-  const source = await fetchSource(url);
+  const source = await fetchSource(url, fetch);
   const entries = parseSource(source);
 
   outputEl.innerHTML = render(entries);
@@ -106,4 +99,19 @@ async function main() {
   }
 }
 
-main().catch((err) => showError(err.message));
+/**
+ * Fetch and render the file named by the `url` query parameter into the page.
+ * Never rejects; failures are shown in the page's error element.
+ */
+export async function main(env) {
+  try {
+    await load(env);
+  } catch (err) {
+    const { document } = env;
+    document.getElementById("status").hidden = true;
+    document.getElementById("output").hidden = true;
+    const errorEl = document.getElementById("error");
+    errorEl.textContent = `Error: ${err.message}`;
+    errorEl.hidden = false;
+  }
+}

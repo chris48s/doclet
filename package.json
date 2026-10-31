@@ -1,6 +1,8 @@
 {
+  "type": "module",
   "scripts": {
-    "start": "http-server ."
+    "start": "http-server .",
+    "test": "node --test --experimental-test-coverage"
   },
   "dependencies": {
     "acorn": "^8.19.0",
