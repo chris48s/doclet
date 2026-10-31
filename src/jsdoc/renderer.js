@@ -1,3 +1,5 @@
+import { Marked } from "marked";
+
 const ESCAPES = {
   "&": "&amp;",
   "<": "&lt;",
@@ -27,9 +29,32 @@ function linkify(text) {
   return result + escapeHtml(text.slice(last));
 }
 
-function renderDescription(description) {
+const SAFE_HREF = /^(https?:|mailto:|#|\/|\.)/i;
+
+// Raw HTML is escaped and unsafe link/image targets are dropped, since comments are untrusted input.
+const marked = new Marked({
+  renderer: {
+    html: ({ text }) => escapeHtml(text),
+  },
+  walkTokens(token) {
+    if (
+      (token.type === "link" || token.type === "image") &&
+      !SAFE_HREF.test(token.href.trim())
+    ) {
+      token.href = "";
+    }
+  },
+});
+
+// `stripDash` removes the "- " separator that follows a tag name.
+function renderDescription(description, { markdown, stripDash }) {
+  if (stripDash) {
+    description = description.replace(/^[-\s]+/, "");
+  }
+  if (markdown) {
+    return marked.parse(description, { async: false }).trim();
+  }
   return description
-    .replace(/^[-\s]+/, "")
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
@@ -47,7 +72,7 @@ function renderProblems(problems) {
   return `<h3 class="problems">Problems</h3><ul class="problems">${items}</ul>`;
 }
 
-function renderTag(tag) {
+function renderTag(tag, markdown) {
   const parts = [`<span class="tag-name">${escapeHtml(tag.tag)}</span>`];
 
   if (tag.type) {
@@ -66,7 +91,7 @@ function renderTag(tag) {
   }
 
   const description = tag.description
-    ? `<div class="tag-description">${renderDescription(tag.description)}</div>`
+    ? `<div class="tag-description">${renderDescription(tag.description, { markdown, stripDash: true })}</div>`
     : "";
 
   return `<li class="tag">${parts.join(" ")}${description}${renderProblems(tag.problems)}</li>`;
@@ -112,13 +137,13 @@ function renderHeading(declaration, id) {
   return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code> <a class="permalink" href="#${escapeHtml(id)}" title="Permalink">#</a></h2>`;
 }
 
-function renderBlock({ block, declaration }, used) {
+function renderBlock({ block, declaration }, used, markdown) {
   const id = makeId(declaration, used);
   const description = block.description
-    ? `<div class="description">${renderDescription(block.description)}</div>`
+    ? `<div class="description">${renderDescription(block.description, { markdown, stripDash: false })}</div>`
     : "";
   const tags = block.tags.length
-    ? `<ul class="tags">${block.tags.map(renderTag).join("\n")}</ul>`
+    ? `<ul class="tags">${block.tags.map((t) => renderTag(t, markdown)).join("\n")}</ul>`
     : "";
 
   return `<section class="block" id="${escapeHtml(id)}">
@@ -132,11 +157,12 @@ ${renderProblems(block.problems)}
 /**
  * Render [{ block, declaration }] to an HTML string, where `block` is a comment-parser
  * Block and `declaration` is from declarations.js (or null). All source-derived text is escaped.
+ * With `markdown`, descriptions are rendered as markdown instead of linkified plain text.
  */
-export function render(entries) {
+export function render(entries, { markdown = false } = {}) {
   if (entries.length === 0) {
     return "<p>No documentation comments found.</p>";
   }
   const used = new Set();
-  return entries.map((entry) => renderBlock(entry, used)).join("\n");
+  return entries.map((entry) => renderBlock(entry, used, markdown)).join("\n");
 }

@@ -21,6 +21,7 @@
     "acorn": "^8.19.0",
     "acorn-walk": "^8.3.5",
     "comment-parser": "^1.4.9",
+    "marked": "^18.1.2",
     "water.css": "^2.1.1"
   },
   "devDependencies": {

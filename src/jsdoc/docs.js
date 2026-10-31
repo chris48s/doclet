@@ -100,7 +100,8 @@ async function load(env) {
   const source = await fetchSource(url, fetch);
   const entries = parseSource(source);
 
-  outputEl.innerHTML = render(entries);
+  const markdown = new URLSearchParams(location.search).get("md") === "true";
+  outputEl.innerHTML = render(entries, { markdown });
   statusEl.hidden = true;
   outputEl.hidden = false;
 

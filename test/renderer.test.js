@@ -147,14 +147,26 @@ describe("render", () => {
     assert.match(html, /<p>A number<\/p>/);
   });
 
-  test("splits descriptions into paragraphs and strips leading dash", () => {
+  test("splits descriptions into paragraphs", () => {
     const html = render([
       {
-        block: block({ description: "- First\nline\n\nSecond" }),
+        block: block({ description: "First\nline\n\nSecond" }),
         declaration: null,
       },
     ]);
     assert.match(html, /<p>First<br>line<\/p>\n<p>Second<\/p>/);
+  });
+
+  test("strips leading dash and whitespace from tag descriptions", () => {
+    const html = render([
+      {
+        block: block({
+          tags: [{ tag: "param", name: "x", description: " - \n First" }],
+        }),
+        declaration: null,
+      },
+    ]);
+    assert.match(html, /<div class="tag-description"><p>First<\/p><\/div>/);
   });
 
   test("linkifies URLs without trailing punctuation", () => {
@@ -178,6 +190,57 @@ describe("render", () => {
       },
     ]);
     assert.ok(!html.includes("<a href"));
+  });
+
+  describe("markdown", () => {
+    const md = (description, tags = []) =>
+      render([{ block: block({ description, tags }), declaration: null }], {
+        markdown: true,
+      });
+
+    test("does not render markdown by default", () => {
+      const html = render([
+        { block: block({ description: "**bold**" }), declaration: null },
+      ]);
+      assert.match(html, /<p>\*\*bold\*\*<\/p>/);
+    });
+
+    test("renders markdown descriptions", () => {
+      const html = md("**bold** and [a link](https://example.com)\n\n- one");
+      assert.match(html, /<strong>bold<\/strong>/);
+      assert.match(html, /<a href="https:\/\/example.com">a link<\/a>/);
+      assert.match(html, /<li>one<\/li>/);
+    });
+
+    test("renders markdown in tag descriptions and strips leading dash", () => {
+      const html = md("", [
+        { tag: "param", name: "x", description: "- some `code`" },
+      ]);
+      assert.match(html, /<code>code<\/code>/);
+      assert.doesNotMatch(html, /<ul>/);
+    });
+
+    test("still linkifies tag names", () => {
+      const html = md("", [
+        { tag: "see", name: "https://example.com", description: "" },
+      ]);
+      assert.match(
+        html,
+        /<code class="tag-id"><a href="https:\/\/example.com"/,
+      );
+    });
+
+    test("escapes raw HTML", () => {
+      const html = md("<script>alert(1)</script> <img src=x onerror=y>");
+      assert.ok(!html.includes("<script>"));
+      assert.ok(!html.includes("<img"));
+    });
+
+    test("drops unsafe link targets", () => {
+      const html = md("[x](javascript:alert(1)) ![y](data:text/html,z)");
+      assert.ok(!html.includes("javascript:"));
+      assert.ok(!html.includes("data:"));
+    });
   });
 
   test("renders problems", () => {

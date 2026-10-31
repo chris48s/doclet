@@ -64,6 +64,16 @@ describe("main", () => {
     assert.equal(elements.error.hidden, undefined);
   });
 
+  test("renders descriptions as markdown when md=true", async () => {
+    const source = "/** Has **bold** text. */\nexport function f() {}\n";
+    const { env, elements } = makeEnv({
+      search: `${urlParam("https://example.com/f.js")}&md=true`,
+      fetch: respond(source),
+    });
+    await main(env);
+    assert.match(elements.output.innerHTML, /<strong>bold<\/strong>/);
+  });
+
   test("does not treat @returns text as a name", async () => {
     const { env, elements } = makeEnv({
       search: urlParam("https://example.com/add.js"),
