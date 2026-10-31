@@ -16,7 +16,9 @@ function getTargetUrl(search) {
   }
 
   if (url.protocol !== "http:" && url.protocol !== "https:") {
-    throw new Error(`Unsupported URL protocol '${url.protocol}'. Use http or https.`);
+    throw new Error(
+      `Unsupported URL protocol '${url.protocol}'. Use http or https.`,
+    );
   }
   return url;
 }
@@ -95,7 +97,9 @@ async function load(env) {
   outputEl.hidden = false;
 
   if (location.hash) {
-    document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
+    document
+      .getElementById(decodeURIComponent(location.hash.slice(1)))
+      ?.scrollIntoView();
   }
 }
 

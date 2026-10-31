@@ -5,17 +5,22 @@ import { main } from "../jsdoc/docs.js";
 function makeEnv({ search = "", hash = "", fetch } = {}) {
   const ids = ["status", "error", "output", "source", "title"];
   const elements = Object.fromEntries(
-    ids.map((id) => [id, { hidden: undefined, textContent: "", innerHTML: "" }]),
+    ids.map((id) => [
+      id,
+      { hidden: undefined, textContent: "", innerHTML: "" },
+    ]),
   );
   const document = { getElementById: (id) => elements[id] ?? null };
   return { env: { document, location: { search, hash }, fetch }, elements };
 }
 
-const respond = (body, { status = 200, statusText = "OK" } = {}) => async () => ({
-  status,
-  statusText,
-  text: async () => body,
-});
+const respond =
+  (body, { status = 200, statusText = "OK" } = {}) =>
+  async () => ({
+    status,
+    statusText,
+    text: async () => body,
+  });
 
 const SOURCE = `/**
  * Adds numbers.
@@ -42,9 +47,18 @@ describe("main", () => {
 
     assert.equal(requested.href, "https://example.com/src/add.js");
     assert.equal(elements.title.textContent, "add.js");
-    assert.match(elements.source.innerHTML, /<a href="https:\/\/example.com\/src\/add.js"/);
-    assert.match(elements.output.innerHTML, /export function<\/span> <code>add\(a\)<\/code>/);
-    assert.match(elements.output.innerHTML, /<span class="tag-name">param<\/span>/);
+    assert.match(
+      elements.source.innerHTML,
+      /<a href="https:\/\/example.com\/src\/add.js"/,
+    );
+    assert.match(
+      elements.output.innerHTML,
+      /export function<\/span> <code>add\(a\)<\/code>/,
+    );
+    assert.match(
+      elements.output.innerHTML,
+      /<span class="tag-name">param<\/span>/,
+    );
     assert.equal(elements.status.hidden, true);
     assert.equal(elements.output.hidden, false);
     assert.equal(elements.error.hidden, undefined);
@@ -56,7 +70,10 @@ describe("main", () => {
       fetch: respond(SOURCE),
     });
     await main(env);
-    assert.doesNotMatch(elements.output.innerHTML, /<code class="tag-id">The<\/code>/);
+    assert.doesNotMatch(
+      elements.output.innerHTML,
+      /<code class="tag-id">The<\/code>/,
+    );
     assert.match(elements.output.innerHTML, /<p>The sum<\/p>/);
   });
 
@@ -107,11 +124,17 @@ describe("main", () => {
     }
 
     test("missing url parameter", async () => {
-      await expectError({ search: "", fetch: respond("") }, /Missing required query parameter 'url'/);
+      await expectError(
+        { search: "", fetch: respond("") },
+        /Missing required query parameter 'url'/,
+      );
     });
 
     test("invalid url", async () => {
-      await expectError({ search: urlParam("not a url"), fetch: respond("") }, /'not a url' is not a valid URL/);
+      await expectError(
+        { search: urlParam("not a url"), fetch: respond("") },
+        /'not a url' is not a valid URL/,
+      );
     });
 
     test("unsupported protocol", async () => {
@@ -174,7 +197,10 @@ describe("main", () => {
 
     test("source that is not JavaScript", async () => {
       await expectError(
-        { search: urlParam("https://example.com/a.js"), fetch: respond("function (") },
+        {
+          search: urlParam("https://example.com/a.js"),
+          fetch: respond("function ("),
+        },
         /Could not parse file as JavaScript/,
       );
     });

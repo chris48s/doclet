@@ -59,10 +59,20 @@ function functionInfo(fn, source) {
 // `binding` is true for variables/assignments, false for class and object members.
 function describeValue(name, value, source, binding) {
   if (value && FUNCTION_TYPES.has(value.type)) {
-    return { kind: binding ? "function" : "method", name, ...functionInfo(value, source) };
+    return {
+      kind: binding ? "function" : "method",
+      name,
+      ...functionInfo(value, source),
+    };
   }
   if (value && value.type === "ClassExpression") {
-    return { kind: "class", name, extends: value.superClass ? source.slice(value.superClass.start, value.superClass.end) : null };
+    return {
+      kind: "class",
+      name,
+      extends: value.superClass
+        ? source.slice(value.superClass.start, value.superClass.end)
+        : null,
+    };
   }
   return { kind: binding ? "variable" : "property", name };
 }
@@ -70,32 +80,50 @@ function describeValue(name, value, source, binding) {
 function describe(node, source) {
   switch (node.type) {
     case "FunctionDeclaration":
-      return { kind: "function", name: node.id?.name ?? null, ...functionInfo(node, source) };
+      return {
+        kind: "function",
+        name: node.id?.name ?? null,
+        ...functionInfo(node, source),
+      };
 
     case "ClassDeclaration":
       return {
         kind: "class",
         name: node.id?.name ?? null,
-        extends: node.superClass ? source.slice(node.superClass.start, node.superClass.end) : null,
+        extends: node.superClass
+          ? source.slice(node.superClass.start, node.superClass.end)
+          : null,
       };
 
     case "VariableDeclaration": {
       const [first] = node.declarations;
       if (first.id.type !== "Identifier") return null;
-      return { ...describeValue(first.id.name, first.init, source, true), declarationKind: node.kind };
+      return {
+        ...describeValue(first.id.name, first.init, source, true),
+        declarationKind: node.kind,
+      };
     }
 
     case "ExportNamedDeclaration":
     case "ExportDefaultDeclaration": {
       const inner = node.declaration && describe(node.declaration, source);
       if (!inner) return null;
-      return { ...inner, exported: true, default: node.type === "ExportDefaultDeclaration" };
+      return {
+        ...inner,
+        exported: true,
+        default: node.type === "ExportDefaultDeclaration",
+      };
     }
 
     case "MethodDefinition": {
       const name = keyName(node.key, node.computed, source);
       const kind = node.kind === "method" ? "method" : node.kind; // constructor | get | set
-      return { kind, name, static: node.static, ...functionInfo(node.value, source) };
+      return {
+        kind,
+        name,
+        static: node.static,
+        ...functionInfo(node.value, source),
+      };
     }
 
     case "PropertyDefinition": {
@@ -114,7 +142,11 @@ function describe(node, source) {
 
     case "ExpressionStatement": {
       const expr = node.expression;
-      if (expr.type !== "AssignmentExpression" || expr.left.type !== "MemberExpression") return null;
+      if (
+        expr.type !== "AssignmentExpression" ||
+        expr.left.type !== "MemberExpression"
+      )
+        return null;
       const name = source.slice(expr.left.start, expr.left.end);
       return describeValue(name, expr.right, source, true);
     }
@@ -144,7 +176,10 @@ export function findDocumentedDeclarations(source) {
     let pos = end;
     for (;;) {
       const next = source.slice(pos).search(/\S/);
-      if (next === -1) { pos = -1; break; }
+      if (next === -1) {
+        pos = -1;
+        break;
+      }
       pos += next;
       if (!commentEnds.has(pos)) break;
       pos = commentEnds.get(pos);

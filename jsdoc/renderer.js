@@ -60,7 +60,9 @@ function renderTag(tag) {
     parts.push('<span class="tag-optional">optional</span>');
   }
   if (tag.default !== undefined) {
-    parts.push(`<span class="tag-default">default: <code>${escapeHtml(tag.default)}</code></span>`);
+    parts.push(
+      `<span class="tag-default">default: <code>${escapeHtml(tag.default)}</code></span>`,
+    );
   }
 
   const description = tag.description
@@ -72,7 +74,10 @@ function renderTag(tag) {
 
 // Slugs the declaration name and appends -2, -3, ... on collision so every id on the page is unique.
 function makeId(declaration, used) {
-  const base = (declaration?.name ?? "").replace(/[^\w$.-]+/g, "-").replace(/^-+|-+$/g, "") || "block";
+  const base =
+    (declaration?.name ?? "")
+      .replace(/[^\w$.-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "block";
   let id = base;
   for (let n = 2; used.has(id); n++) {
     id = `${base}-${n}`;
@@ -87,15 +92,21 @@ function renderHeading(declaration, id) {
   }
 
   const modifiers = [];
-  if (declaration.exported) modifiers.push(declaration.default ? "export default" : "export");
+  if (declaration.exported)
+    modifiers.push(declaration.default ? "export default" : "export");
   if (declaration.static) modifiers.push("static");
   if (declaration.async) modifiers.push("async");
   if (declaration.generator) modifiers.push("generator");
 
-  const keyword = declaration.kind === "variable" ? declaration.declarationKind ?? "variable" : declaration.kind;
+  const keyword =
+    declaration.kind === "variable"
+      ? (declaration.declarationKind ?? "variable")
+      : declaration.kind;
   const name = declaration.name ?? "(anonymous)";
   const params = declaration.params ? `(${declaration.params.join(", ")})` : "";
-  const extendsClause = declaration.extends ? ` extends ${declaration.extends}` : "";
+  const extendsClause = declaration.extends
+    ? ` extends ${declaration.extends}`
+    : "";
   const prefix = [...modifiers, keyword].join(" ");
 
   return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code> <a class="permalink" href="#${escapeHtml(id)}" title="Permalink">#</a></h2>`;

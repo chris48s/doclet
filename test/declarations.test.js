@@ -6,11 +6,16 @@ const declOf = (source) => findDocumentedDeclarations(source)[0].declaration;
 
 describe("findDocumentedDeclarations", () => {
   test("returns nothing when there are no doc comments", () => {
-    assert.deepEqual(findDocumentedDeclarations("// hi\n/* plain */\nfunction f() {}"), []);
+    assert.deepEqual(
+      findDocumentedDeclarations("// hi\n/* plain */\nfunction f() {}"),
+      [],
+    );
   });
 
   test("returns the comment text", () => {
-    const [{ comment }] = findDocumentedDeclarations("/** Hello */\nfunction f() {}");
+    const [{ comment }] = findDocumentedDeclarations(
+      "/** Hello */\nfunction f() {}",
+    );
     assert.equal(comment, "/** Hello */");
   });
 
@@ -25,7 +30,11 @@ describe("findDocumentedDeclarations", () => {
   });
 
   test("describes class declarations", () => {
-    assert.deepEqual(declOf("/** */\nclass A extends B.C {}"), { kind: "class", name: "A", extends: "B.C" });
+    assert.deepEqual(declOf("/** */\nclass A extends B.C {}"), {
+      kind: "class",
+      name: "A",
+      extends: "B.C",
+    });
   });
 
   test("describes variables holding arrow functions", () => {
@@ -40,7 +49,11 @@ describe("findDocumentedDeclarations", () => {
   });
 
   test("describes plain variables", () => {
-    assert.deepEqual(declOf("/** */\nlet x = 1;"), { kind: "variable", name: "x", declarationKind: "let" });
+    assert.deepEqual(declOf("/** */\nlet x = 1;"), {
+      kind: "variable",
+      name: "x",
+      declarationKind: "let",
+    });
   });
 
   test("ignores destructuring declarations", () => {
@@ -108,7 +121,11 @@ describe("findDocumentedDeclarations", () => {
   });
 
   test("skips non-doc comments between the doc comment and the code", () => {
-    assert.equal(declOf("/** */\n// eslint-disable-next-line\n/* x */\nfunction f() {}").name, "f");
+    assert.equal(
+      declOf("/** */\n// eslint-disable-next-line\n/* x */\nfunction f() {}")
+        .name,
+      "f",
+    );
   });
 
   test("returns null declaration when nothing follows", () => {
@@ -120,10 +137,16 @@ describe("findDocumentedDeclarations", () => {
   });
 
   test("falls back to script parsing (CommonJS)", () => {
-    assert.equal(declOf("/** */\nfunction f() { return 1; }\nreturn f;").name, "f");
+    assert.equal(
+      declOf("/** */\nfunction f() { return 1; }\nreturn f;").name,
+      "f",
+    );
   });
 
   test("throws on invalid JavaScript", () => {
-    assert.throws(() => findDocumentedDeclarations("/** */ function ("), SyntaxError);
+    assert.throws(
+      () => findDocumentedDeclarations("/** */ function ("),
+      SyntaxError,
+    );
   });
 });
