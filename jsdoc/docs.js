@@ -31,6 +31,7 @@ async function fetchSource(url, fetch) {
     // fetch() rejects on network failure or CORS rejection
     throw new Error(
       `Could not fetch ${url} (network error or blocked by CORS): ${err.message}`,
+      { cause: err },
     );
   }
 
@@ -43,7 +44,10 @@ async function fetchSource(url, fetch) {
   try {
     return await response.text();
   } catch (err) {
-    throw new Error(`Could not read response body from ${url}: ${err.message}`);
+    throw new Error(
+      `Could not read response body from ${url}: ${err.message}`,
+      { cause: err },
+    );
   }
 }
 
@@ -65,7 +69,9 @@ function parseSource(source) {
   try {
     found = findDocumentedDeclarations(source);
   } catch (err) {
-    throw new Error(`Could not parse file as JavaScript: ${err.message}`);
+    throw new Error(`Could not parse file as JavaScript: ${err.message}`, {
+      cause: err,
+    });
   }
 
   try {
@@ -73,7 +79,9 @@ function parseSource(source) {
       parse(comment, parserOptions).map((block) => ({ block, declaration })),
     );
   } catch (err) {
-    throw new Error(`Could not parse doc comment: ${err.message}`);
+    throw new Error(`Could not parse doc comment: ${err.message}`, {
+      cause: err,
+    });
   }
 }
 
