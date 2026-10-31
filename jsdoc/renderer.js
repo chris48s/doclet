@@ -29,6 +29,7 @@ function linkify(text) {
 
 function renderDescription(description) {
   return description
+    .replace(/^[-\s]+/, "")
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
