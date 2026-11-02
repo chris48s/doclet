@@ -88,7 +88,6 @@ describe("main", () => {
   });
 
   for (const tag of ["file", "fileoverview", "overview"]) {
-    // eslint-disable-next-line node-core-test/consistent-spacing-between-blocks
     test(`does not treat @${tag} text as a name`, async () => {
       const source = `/**\n * @${tag} Manages the configuration settings\n */\nexport function f() {}\n`;
       const { env, elements } = makeEnv({
