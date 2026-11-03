@@ -8,6 +8,19 @@
   </head>
   <body>
     <h1 id="title">Doclet</h1>
-    <div>TODO</div>
+    <p>
+      Not a full docs site. Just a lil doclet.
+    </p>
+    <p>
+      Paste a URL to a javascript file containing JSDoc comments.
+      Generate HTML documentation.
+    </p>
+    <form method="get" action="jsdoc/">
+      <label for="url">URL</label>
+      <input type="text" id="url" name="url" size="56" />
+      <label for="md">Parse markdown in comments</label>
+      <input type="checkbox" id="md" name="md" value="true" checked />
+      <input type="submit" value="Try it out" />
+    </form>
   </body>
 </html>
