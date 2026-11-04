@@ -1,6 +1,6 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
-import { findDocumentedDeclarations } from "../src/jsdoc/declarations.js";
+import { findDocumentedDeclarations } from "../../src/js/jsfile/declarations.js";
 
 const declOf = (source) => findDocumentedDeclarations(source)[0].declaration;
 

@@ -1,3 +1,3 @@
 # doclet
 
-Not a full docs site. Just a lil doclet.
+Generate HTML documentation from JSDoc comments without installing or hosting anything.

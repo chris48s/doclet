@@ -1,16 +1,7 @@
 import { Marked } from "marked";
+import { escapeHtml } from "../helpers.js";
 
-const ESCAPES = {
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;",
-};
-
-export function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, (c) => ESCAPES[c]);
-}
+export { escapeHtml };
 
 // Matches http(s) URLs, excluding trailing punctuation.
 const URL_PATTERN = /https?:\/\/[^\s<>"']*[^\s<>"'.,;:!?)\]}]/g;
