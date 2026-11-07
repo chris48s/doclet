@@ -120,6 +120,19 @@ describe("findDocumentedDeclarations", () => {
     });
   });
 
+  test("keeps the function name for module.exports assignments", () => {
+    assert.deepEqual(
+      declOf("/** */\nmodule.exports = function npmRunAll(a, b) {};"),
+      {
+        kind: "function",
+        name: "npmRunAll",
+        params: ["a", "b"],
+        async: false,
+        generator: false,
+      },
+    );
+  });
+
   test("skips non-doc comments between the doc comment and the code", () => {
     assert.equal(
       declOf("/** */\n// eslint-disable-next-line\n/* x */\nfunction f() {}")

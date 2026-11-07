@@ -147,7 +147,12 @@ function describe(node, source) {
         expr.left.type !== "MemberExpression"
       )
         return null;
-      const name = source.slice(expr.left.start, expr.left.end);
+      const target = source.slice(expr.left.start, expr.left.end);
+      // `module.exports = function foo() {}` is better described by its own name.
+      const name =
+        target === "module.exports" && expr.right.id
+          ? expr.right.id.name
+          : target;
       return describeValue(name, expr.right, source, true);
     }
 
