@@ -8,17 +8,57 @@
   </head>
   <body>
     <h1 id="title">Doclet</h1>
-    <p>Not a full docs site. Just a lil doclet.</p>
     <p>
-      Paste a URL to a javascript file containing JSDoc comments. Generate HTML
-      documentation.
+      Generate HTML documentation from JSDoc comments without installing or
+      hosting anything.
     </p>
-    <form method="get" action="jsdoc/">
+
+    <hr />
+
+    <h2>Single File</h2>
+    <p>
+      Generate a HTML documentation page from a javascript file containing JSDoc
+      comments.
+    </p>
+    <form method="get" action="jsfile/">
       <label for="url">URL</label>
-      <input type="text" id="url" name="url" size="56" />
+      <input
+        type="url"
+        id="url"
+        name="url"
+        size="56"
+        placeholder="https://example.com/script.js"
+        required
+      />
       <label for="md">Parse markdown in comments</label>
       <input type="checkbox" id="md" name="md" value="true" checked />
       <input type="submit" value="Try it out" />
     </form>
+
+    <hr />
+
+    <h2>GitHub Repo</h2>
+    <p>
+      Generate a HTML documentation site from a GitHub repo containing JSDoc
+      comments.
+    </p>
+
+    <form method="get" action="jsrepo/">
+      <label for="url">Repository URL</label>
+      <input
+        type="url"
+        id="url"
+        name="url"
+        size="56"
+        placeholder="https://github.com/user/repo"
+        required
+      />
+      <label for="md">Parse markdown in comments</label>
+      <input type="checkbox" id="md" name="md" value="true" checked />
+      <input type="submit" value="Try it out" />
+    </form>
+
+    <!-- TODO: examples -->
+    <!-- TODO: 'api' docs -->
   </body>
 </html>
