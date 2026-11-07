@@ -128,8 +128,19 @@ function renderHeading(declaration, id) {
   return `<h2 class="signature"><span class="kind">${escapeHtml(prefix)}</span> <code>${escapeHtml(name + params + extendsClause)}</code> <a class="permalink" href="#${escapeHtml(id)}" title="Permalink">#</a></h2>`;
 }
 
+const MEMBER_KINDS = new Set([
+  "constructor",
+  "method",
+  "property",
+  "get",
+  "set",
+]);
+
 function renderBlock({ block, declaration }, used, markdown) {
   const id = makeId(declaration, used);
+  const blockClass = MEMBER_KINDS.has(declaration?.kind)
+    ? "block member"
+    : "block";
   const description = block.description
     ? `<div class="description">${renderDescription(block.description, { markdown, stripDash: false })}</div>`
     : "";
@@ -137,7 +148,7 @@ function renderBlock({ block, declaration }, used, markdown) {
     ? `<ul class="tags">${block.tags.map((t) => renderTag(t, markdown)).join("\n")}</ul>`
     : "";
 
-  return `<section class="block" id="${escapeHtml(id)}">
+  return `<section class="${blockClass}" id="${escapeHtml(id)}">
 ${renderHeading(declaration, id)}
 ${description}
 ${tags}
