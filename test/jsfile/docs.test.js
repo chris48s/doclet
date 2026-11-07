@@ -106,6 +106,33 @@ describe("main", () => {
     });
   }
 
+  describe("page title from @module", () => {
+    const titleFor = async (source) => {
+      const { env, elements } = makeEnv({
+        search: urlParam("https://example.com/src/mod.js"),
+        fetch: respond(source),
+      });
+      await main(env);
+      return elements.title.textContent;
+    };
+
+    test("uses the filename when @module has no name", async () => {
+      const source = "/**\n * @module\n */\nexport function f() {}\n";
+      assert.equal(await titleFor(source), "mod.js");
+    });
+
+    test("uses the module name from a single @module tag", async () => {
+      const source = "/**\n * @module my-module\n */\nexport function f() {}\n";
+      assert.equal(await titleFor(source), "my-module");
+    });
+
+    test("uses the first module name when there are several", async () => {
+      const source =
+        "/**\n * @module first\n */\n\n/**\n * @module second\n */\nexport function f() {}\n";
+      assert.equal(await titleFor(source), "first");
+    });
+  });
+
   test("falls back to the default title when the path has no file name", async () => {
     const { env, elements } = makeEnv({
       search: urlParam("https://example.com/"),

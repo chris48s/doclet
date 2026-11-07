@@ -72,6 +72,18 @@ function parseSource(source) {
   }
 }
 
+// Name from the first `@module` tag that has one, in source order.
+function findModuleName(entries) {
+  for (const { block } of entries) {
+    for (const tag of block.tags) {
+      if (tag.tag === "module" && tag.name) {
+        return tag.name;
+      }
+    }
+  }
+  return undefined;
+}
+
 async function load(env) {
   const { document, location, fetch } = env;
   const statusEl = document.getElementById("status");
@@ -80,12 +92,14 @@ async function load(env) {
   const titleEl = document.getElementById("title");
 
   const url = getTargetUrl(location.search);
-  titleEl.textContent = url.pathname.split("/").pop() || "Doclet";
+  const fileName = url.pathname.split("/").pop() || "Doclet";
+  titleEl.textContent = fileName;
   const safeUrl = escapeHtml(url.href);
   sourceEl.innerHTML = `Source: <a href="${safeUrl}" rel="noopener noreferrer">${safeUrl}</a>`;
 
   const source = await fetchSource(url, fetch);
   const entries = parseSource(source);
+  titleEl.textContent = findModuleName(entries) ?? fileName;
 
   const markdown = new URLSearchParams(location.search).get("md") === "true";
   outputEl.innerHTML = render(entries, { markdown });
