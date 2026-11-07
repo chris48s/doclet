@@ -43,11 +43,11 @@ const tokenizeName = tokenizers.name();
 const parserOptions = {
   tokenizers: [
     tokenizers.tag(),
-    tokenizers.type("compact"),
+    tokenizers.type("preserve"),
     // These tags have no name, so the rest of the line is the description
     (spec) =>
       DESCRIPTION_ONLY_TAGS.has(`@${spec.tag}`) ? spec : tokenizeName(spec),
-    tokenizers.description("compact"),
+    tokenizers.description("preserve"),
   ],
 };
 
