@@ -47,10 +47,14 @@ export async function getJavaScriptFiles(repoUrl) {
     );
   }
 
+  const INCLUDE_REGEX = /\.(js|mjs|cjs)$/i;
+  const EXCLUDE_REGEX = /\.(test|spec)\.(js|mjs|cjs)$/i;
+
   const files = treeData.tree
-    .filter(
-      (item) => item.type === "blob" && /\.(js|mjs|cjs)$/i.test(item.path),
-    )
+    .filter((item) => item.type === "blob")
+    .filter((item) => INCLUDE_REGEX.test(item.path))
+    .filter((item) => !EXCLUDE_REGEX.test(item.path))
+
     .map((item) => item.path);
   return { defaultBranch, files };
 }

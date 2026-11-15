@@ -55,4 +55,36 @@ describe("getJavaScriptFiles", () => {
       /Invalid GitHub repository URL/,
     );
   });
+
+  test("ignores .test.js, .test.mjs, .test.cjs, .spec.js, .spec.mjs, and .spec.cjs files", async () => {
+    stubGitHub([
+      { type: "blob", path: "main.js" },
+      { type: "blob", path: "utils.mjs" },
+      { type: "blob", path: "config.cjs" },
+      { type: "blob", path: "main.test.js" },
+      { type: "blob", path: "utils.test.mjs" },
+      { type: "blob", path: "config.test.cjs" },
+      { type: "blob", path: "main.spec.js" },
+      { type: "blob", path: "utils.spec.mjs" },
+      { type: "blob", path: "config.spec.cjs" },
+      { type: "blob", path: "src/helpers.js" },
+      { type: "blob", path: "src/helpers.test.js" },
+      { type: "blob", path: "src/helpers.spec.mjs" },
+      { type: "blob", path: "test/runner.js" },
+      { type: "blob", path: "test/runner.spec.cjs" },
+    ]);
+
+    const result = await getJavaScriptFiles("https://github.com/owner/repo");
+
+    assert.deepEqual(result, {
+      defaultBranch: "main",
+      files: [
+        "main.js",
+        "utils.mjs",
+        "config.cjs",
+        "src/helpers.js",
+        "test/runner.js",
+      ],
+    });
+  });
 });
